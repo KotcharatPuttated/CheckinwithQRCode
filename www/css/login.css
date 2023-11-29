@@ -1,0 +1,126 @@
+@helix-size: 60vmin;
+@animation-duration: 2s;
+@number-of-dots: 72;
+@dots-per-circle: @number-of-dots / 2;
+@dots-per-loop: @dots-per-circle / 6;
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@keyframes move-dot {
+    0% {
+        transform: translateY(-50%) translateX(0) scale(1);
+        animation-timing-function: ease-in;
+    }
+    
+    25% {
+        transform: translateY(-50%) translateX(@helix-size / 16) scale(1.3);
+        animation-timing-function: ease-out;
+    }
+    
+    50% {
+        transform: translateY(-50%) translateX(@helix-size / 8) scale(1);
+        animation-timing-function: ease-in;
+    }
+    
+    75% {
+        transform: translateY(-50%) translateX(@helix-size / 16) scale(0.5);
+        animation-timing-function: ease-out;
+    }
+    
+    100% {
+        transform: translateY(-50%) translateX(0) scale(1);
+    }
+}
+
+
+@keyframes update-z-index {
+    0% {
+        z-index: 1;
+    }
+    
+    49% {
+        z-index: 1;
+    }
+    
+    50% {
+        z-index: -1;
+    }
+    
+    100% {
+        z-index: -1;
+    }
+}
+
+
+.mixin-init-dot(@index) when (@index =< @number-of-dots) {
+    & when (@index =< @dots-per-circle) {
+        &:nth-of-type(@{index}) {
+            transform: rotate(unit(@index * 360 / @dots-per-circle, deg));
+            
+            &::after {
+                background: #fff;
+            }
+        }
+    }
+    
+    & when (@index > @dots-per-circle) {
+        &:nth-of-type(@{index}) {
+            transform: rotate(unit((@index + @dots-per-loop / 2) * 360 / @dots-per-circle, deg));
+            
+            &::after {
+                background: #000;
+            }
+        }
+    }
+    
+    &:nth-of-type(@{index}),
+    &:nth-of-type(@{index})::after{
+        animation-delay: unit(-@index * @animation-duration / @dots-per-loop, s);
+    }
+    
+    .mixin-init-dot(@index + 1);
+}
+
+
+.animated-helix {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    height: @helix-size;
+    width: @helix-size;
+    border-radius: 50%;
+    
+    > .dot {
+        position: absolute;
+        left: 0;
+        top: calc(50% - @helix-size / 20);
+        height: @helix-size / 10;
+        width: 50%;
+        transform-origin: 100% 50%;
+        backface-visibility: hidden;
+        animation: update-z-index @animation-duration linear infinite;
+        
+        .mixin-init-dot(0);
+        
+        &::after {
+            content: '';
+            display: block;
+            height: @helix-size / 20;
+            width:  @helix-size / 20;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            backface-visibility: hidden;
+            animation: move-dot @animation-duration linear infinite;
+            will-change: transform;
+        } 
+    }
+}
