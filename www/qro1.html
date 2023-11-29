@@ -1,0 +1,20 @@
+<center style="margin-top:4%;">
+ <h1 style="margin-bottom:10px;">Access WebCam using JavaScript</h1>
+ <video id="video" autoplay>Not supported in your browser</video>
+</center>
+
+<script>
+
+ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+ if(navigator.getUserMedia){
+  navigator.getUserMedia({video:true},handleVideo,videoError);
+ }
+
+ function handleVideo(stream){
+  document.querySelector('#video').src = window.URL.createObjectURL(stream);
+ }
+
+ function videoError(e){
+  alert('Something is wrong');
+ }
+</script>

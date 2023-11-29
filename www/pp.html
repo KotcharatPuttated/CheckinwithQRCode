@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="http://gabelerner.github.io/canvg/rgbcolor.js"></script>
+    <script type="text/javascript" src="http://gabelerner.github.io/canvg/StackBlur.js"></script>
+    <script type="text/javascript" src="http://gabelerner.github.io/canvg/canvg.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-alpha1/html2canvas.js"></script>
+
+    <script type='text/javascript'>
+    function replaceAllSVGsWithTempCanvas(elemSelector) {
+        var svgElements = $(elemSelector).find('svg');
+
+        //replace all svgs with a temp canvas
+        svgElements.each(function() {
+            var canvas, xml;
+
+            // canvg doesn't cope very well with em font sizes so find the calculated size in pixels and replace it in the element.
+            $.each($(this).find('[style*=em]'), function(index, el) {
+                $(this).css('font-size', getStyle(el, 'font-size'));
+            });
+
+            canvas = document.createElement("canvas");
+            canvas.className = "screenShotTempCanvas";
+
+            //convert SVG into a XML string
+            xml = (new XMLSerializer()).serializeToString(this);
+
+            // Removing the name space as IE throws an error
+            xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
+
+            //draw the SVG onto a canvas
+            canvg(canvas, xml);
+            $(canvas).insertAfter(this);
+
+            //hide the SVG element
+            $(this).attr('class', 'tempHide');
+            $(this).hide();
+        });
+    }
+
+    jQuery(document).ready(function($) {
+        genChart();
+    });
+
+    function genPDF() {
+        var options = {
+            background: '#fff'
+        };
+        var pdf = new jsPDF('p', 'pt', 'a4');
+
+        replaceAllSVGsWithTempCanvas(".content");
+
+        pdf.addHTML($("#chartOuter"), options, function() {
+            pdf.output('dataurlnewwindow');
+
+            $(".content").find('.screenShotTempCanvas').remove();
+            $(".content").find('.tempHide').show().removeClass('tempHide');
+
+        });
+    }
+
+    function genChart() {
+        var chart = c3.generate({
+            data: {
+                columns: [
+                    ['data1', 30],
+                    ['data2', 120],
+                ],
+                type: 'pie'
+            }
+        });
+    }
+    </script>
+</head>
+
+<body class="content">
+    <table width="100%">
+        <tr>
+            <td width="50%">
+                <div id="chartOuter">
+                    <div id="chart"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">
+                <input type="button" onclick="genPDF();" value="Generate PDF" />
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

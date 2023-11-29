@@ -1,0 +1,25 @@
+<html>
+<script langquage='javascript'>
+url=document.location;
+if ((url=="http://localhost") || (url=="http://localhost/"))
+{
+document.write("<head><title>www.firstdomainname.com</title></head>");
+document.write('<frameset cols="*">');
+document.write('<frame src="http://www.yourdomainname.com/firstdomainname">');
+document.write("</frameset>");
+}
+else if (url=="http://www.seconddomainname.com") || (url=="http://www.seconddomainname.com/"))
+{
+document.write("<head><title>www.seconddomainname.com</title></head>");
+document.write('<frameset cols="*">');
+document.write('<frame src="http://www.yourdomainname.com/seconddomainname">');
+document.write("</frameset>");
+}
+else
+{
+document.write('<frameset cols="*">');
+document.write('<frame src="http://www.yourdomainname.com/underconstruction.html">');
+document.write("</frameset>");
+}
+</script>
+</html>

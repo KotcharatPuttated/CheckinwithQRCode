@@ -1,0 +1,65 @@
+<?php
+session_start();
+include('Config.php');
+include('security3.php');
+
+$select_stue="SELECT * FROM tb_info";
+$query_stue=mysqli_query($conn,$select_stue);
+$row_stue=mysqli_fetch_array($query_stue);
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title></title>
+</head>
+<body>
+<!-- ##### Contact Area Start ##### -->
+    <section class="contact-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="contact-content">
+                        <div class="row">
+                            <!-- Contact Information -->
+                            <div class="col-12 col-lg-5">
+                                <div class="contact-information wow fadeInUp" data-wow-delay="400ms">
+                                    <div class="section-heading text-left">
+                                        <h5>รหัสนักศึกษา</h5>
+                                        <h3><?php echo $row_stue['iduser']; ?></h3>
+                                        <span>แก้ไข</span>
+<form class="imgForm" action="leanform.php" method="post" enctype="multipart/form-data">
+    <input type="file" name="upload" />
+    <input type="submit"  name="save"  value="upload" />
+</form>
+                                        <p class="mt-30"></p>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- Contact Form Area -->
+                            <div class="col-12 col-lg-7">
+                                <div class="contact-form-area wow fadeInUp" data-wow-delay="500ms" mr-50>
+                                    <form action="stue2.php" method="GET">
+                                        <input type="text" name="name" class="form-control" id="name" value="<?php echo $row_stue['Name']; ?>" pattern="[ก-ฮ,ะ-ฦา, ]+">
+                                        <input type="text" name="class" class="form-control" id="class" value="<?php echo $row_stue['Class'];?>" pattern="[ก-ฮ,ะ-ฦา,0-9,.]+" required="required">
+                                        <input type="text" name="club" class="form-control" id="club" value="<?php echo $row_stue['Club'];?>" pattern="[ก-ฮ,ะ-ฦา, ]+" required="required">
+                                        <input type="text" name="teacher" class="form-control" id="teacher" value="<?php echo $row_stue['Teacher']; ?>" pattern="[ก-ฮ,ะ-ฦา, ]+" required="required">
+                                        <input type="text" name="phone" class="form-control" id="phone" value="<?php echo $row_stue['Phone'];?>" pattern="[0-9]+" required="required">
+                                        <input type="email" name="email" class="form-control" id="e-mail" value="<?php echo $row_stue['E-mail'];?>" pattern="[A-Z,a-z,0-9,.,@]+" required="required">
+
+                                        <!-- <textarea name="message" class="form-control" id="message" cols="30" rows="10" placeholder="ที่อยู่"></textarea> -->
+                                        <button class="academy-btn btn-4 mt-30" type="submit">ยืนยัน</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Contact Area End ##### -->
+</body>
+</html>
+
